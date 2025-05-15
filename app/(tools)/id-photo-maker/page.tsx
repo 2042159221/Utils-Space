@@ -14,6 +14,67 @@ interface PhotoSize {
   note?: string;
 }
 
+/**
+ * 应用亮度和对比度调整到 ImageData
+ * @param imageData 原始 ImageData 对象
+ * @param brightness 亮度调整值 (-100 到 100)
+ * @param contrast 对比度调整值 (-100 到 100)
+ * @returns 应用调整后的新 ImageData 对象
+ */
+const applyBrightnessAndContrast = (
+  imageData: ImageData,
+  brightness: number,
+  contrast: number
+): ImageData => {
+  const pixels = imageData.data;
+  const numPixels = pixels.length / 4;
+  const adjustedPixels = new Uint8ClampedArray(pixels); // 创建一个新的 Uint8ClampedArray 来存储调整后的像素数据
+
+  // 将亮度和对比度百分比转换为调整因子
+  const brightnessFactor = brightness / 100; // -1 到 1
+  const contrastFactor = contrast / 100; // -1 到 1
+
+  // 对比度调整的公式通常涉及一个乘数。
+  // 一个简单的线性调整公式：pixel = factor * (pixel - 128) + 128
+  // factor = (259 * (contrast + 255)) / (255 * (259 - contrast))
+  // 这里 contrast 是 -100 到 100，需要转换为 -255 到 255 的范围以匹配常见公式
+  const contrastValue = contrastFactor * 255; // -255 到 255
+  const contrastMultiplier = (259 * (contrastValue + 255)) / (255 * (259 - contrastValue));
+
+  for (let i = 0; i < numPixels; i++) {
+    const rIndex = i * 4;
+    const gIndex = i * 4 + 1;
+    const bIndex = i * 4 + 2;
+
+    let r = pixels[rIndex];
+    let g = pixels[gIndex];
+    let b = pixels[bIndex];
+
+    // 应用亮度调整 (简单的加法)
+    r += brightnessFactor * 255;
+    g += brightnessFactor * 255;
+    b += brightnessFactor * 255;
+
+    // 应用对比度调整
+    // 将像素值范围从 [0, 255] 映射到 [-128, 127]，应用乘数，再映射回 [0, 255]
+    r = contrastMultiplier * (r - 128) + 128;
+    g = contrastMultiplier * (g - 128) + 128;
+    b = contrastMultiplier * (b - 128) + 128;
+
+    // 限制像素值在 0 到 255 之间
+    adjustedPixels[rIndex] = Math.max(0, Math.min(255, r));
+    adjustedPixels[gIndex] = Math.max(0, Math.min(255, g));
+    adjustedPixels[bIndex] = Math.max(0, Math.min(255, b));
+
+    // 保留 Alpha 通道
+    adjustedPixels[i * 4 + 3] = pixels[i * 4 + 3];
+  }
+
+  // 创建新的 ImageData 对象并返回
+  return new ImageData(adjustedPixels, imageData.width, imageData.height);
+};
+
+
 export default function IdPhotoMakerPage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -67,6 +128,8 @@ export default function IdPhotoMakerPage() {
   const [dragStart, setDragStart] = useState<{ x: number, y: number, initialCropX: number, initialCropY: number } | null>(null);
   const [isCropInitialized, setIsCropInitialized] = useState(false);
   const [scale, setScale] = useState<number>(1); // 新增：图片缩放比例，默认为1 (100%)
+  const [brightness, setBrightness] = useState<number>(0); // 新增：亮度调整值 (-100 to 100)
+  const [contrast, setContrast] = useState<number>(0); // 新增：对比度调整值 (-100 to 100)
   const [redrawTrigger, setRedrawTrigger] = useState(0); // 新增：用于触发canvas重绘的状态
 
   // Store necessary values in refs whenever they change, so onResults can access them
@@ -202,8 +265,29 @@ export default function IdPhotoMakerPage() {
     ctx.fillStyle = selectedBgColorRef.current; // Use ref for latest color
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // 2. Draw the scaled image
-    ctx.drawImage(image, imageX, imageY, scaledWidth, scaledHeight);
+    // 2. Draw the scaled image onto a temporary canvas to get ImageData
+    const tempDrawCanvas = document.createElement('canvas');
+    tempDrawCanvas.width = scaledWidth;
+    tempDrawCanvas.height = scaledHeight;
+    const tempDrawCtx = tempDrawCanvas.getContext('2d');
+
+    if (!tempDrawCtx) {
+        console.error("无法创建临时画布用于绘制缩放图片。");
+        return;
+    }
+
+    tempDrawCtx.drawImage(image, 0, 0, scaledWidth, scaledHeight);
+
+    // Get image data from the temporary canvas
+    let imageData = tempDrawCtx.getImageData(0, 0, scaledWidth, scaledHeight);
+
+    // Apply brightness and contrast adjustments
+    if (brightness !== 0 || contrast !== 0) {
+        imageData = applyBrightnessAndContrast(imageData, brightness, contrast);
+    }
+
+    // Put the adjusted image data back onto the main canvas
+    ctx.putImageData(imageData, imageX, imageY);
 
 
     // Calculate crop box size based on canvas dimensions and aspect ratio
@@ -469,7 +553,7 @@ export default function IdPhotoMakerPage() {
     } else if (!previewUrl) {
       clearCanvas();
     }
-  }, [previewUrl, selectedSizeName, drawCanvas, clearCanvas, scale, redrawTrigger]); // Add scale and redrawTrigger to dependencies
+  }, [previewUrl, selectedSizeName, drawCanvas, clearCanvas, scale, brightness, contrast, redrawTrigger]); // Add scale, brightness, contrast, and redrawTrigger to dependencies
 
   useEffect(() => {
     const handleResize = () => {
@@ -630,6 +714,16 @@ export default function IdPhotoMakerPage() {
         cropSize.height
     );
 
+    // Get image data from the cropped area
+    let croppedImageData = ctxOutput.getImageData(0, 0, cropSize.width, cropSize.height);
+
+    // Apply brightness and contrast adjustments to the cropped image data
+    if (brightness !== 0 || contrast !== 0) {
+        croppedImageData = applyBrightnessAndContrast(croppedImageData, brightness, contrast);
+    }
+
+    // Put the adjusted image data back onto the output canvas
+    ctxOutput.putImageData(croppedImageData, 0, 0);
 
     // Get base64 data from the output canvas
     const base64Data = outputCanvas.toDataURL('image/png').split(',')[1]; // Always use PNG for internal processing
@@ -827,6 +921,38 @@ export default function IdPhotoMakerPage() {
                     step="0.01" // 步长
                     value={scale}
                     onChange={(e) => setScale(parseFloat(e.target.value))}
+                    className={styles.rangeSlider}
+                  />
+                </div>
+              )}
+              {/* 亮度调整控制 */}
+              {previewUrl && (
+                <div className={styles.settingItem} style={{ marginTop: '15px' }}>
+                  <label htmlFor="brightness-slider" className={styles.label}>亮度 ({brightness}%):</label>
+                  <input
+                    id="brightness-slider"
+                    type="range"
+                    min="-100" // 最小亮度
+                    max="100"   // 最大亮度
+                    step="1" // 步长
+                    value={brightness}
+                    onChange={(e) => setBrightness(parseInt(e.target.value, 10))}
+                    className={styles.rangeSlider}
+                  />
+                </div>
+              )}
+              {/* 对比度调整控制 */}
+              {previewUrl && (
+                <div className={styles.settingItem} style={{ marginTop: '15px' }}>
+                  <label htmlFor="contrast-slider" className={styles.label}>对比度 ({contrast}%):</label>
+                  <input
+                    id="contrast-slider"
+                    type="range"
+                    min="-100" // 最小对比度
+                    max="100"   // 最大对比度
+                    step="1" // 步长
+                    value={contrast}
+                    onChange={(e) => setContrast(parseInt(e.target.value, 10))}
                     className={styles.rangeSlider}
                   />
                 </div>
