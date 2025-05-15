@@ -92,14 +92,12 @@ const applySkinSmoothing = (
   const smoothedPixels = new Uint8ClampedArray(pixels); // 创建一个新的 Uint8ClampedArray
 
   // 简单的 Box Blur 近似
-  const size = Math.max(1, Math.round(radius / 10)); // 将滑块值映射到模糊半径，避免过大的半径影响性能
-  console.log(`[SkinSmoothing] radius: ${radius}, calculated size: ${size}`); // 添加日志
+  // 将滑块值映射到模糊半径。确保即使滑块值很小，半径也至少为1，并避免过大的半径影响性能。
+  // 移除 size === 1 时跳过处理的逻辑，确保即使是最小的模糊半径也能应用效果。
+  const size = Math.max(1, Math.round(radius / 10));
   const sizeSq = size * size;
 
-  if (size === 1) {
-    console.log("[SkinSmoothing] size is 1, skipping smoothing."); // 添加日志
-    return imageData; // 半径为1相当于没有模糊
-  }
+  // 移除 if (size === 1) return imageData; 逻辑，确保即使 size 为 1 也进行模糊处理
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
