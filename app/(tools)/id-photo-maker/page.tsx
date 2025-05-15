@@ -74,6 +74,110 @@ const applyBrightnessAndContrast = (
   return new ImageData(adjustedPixels, imageData.width, imageData.height);
 };
 
+/**
+ * 应用简单的磨皮效果到 ImageData (Box Blur 近似)
+ * @param imageData 原始 ImageData 对象
+ * @param radius 模糊半径 (基于滑块值 0-100 映射)
+ * @returns 应用磨皮后的新 ImageData 对象
+ */
+const applySkinSmoothing = (
+  imageData: ImageData,
+  radius: number
+): ImageData => {
+  if (radius <= 0) return imageData; // 无需处理
+
+  const pixels = imageData.data;
+  const width = imageData.width;
+  const height = imageData.height;
+  const smoothedPixels = new Uint8ClampedArray(pixels); // 创建一个新的 Uint8ClampedArray
+
+  // 简单的 Box Blur 近似
+  const size = Math.max(1, Math.round(radius / 10)); // 将滑块值映射到模糊半径，避免过大的半径影响性能
+  console.log(`[SkinSmoothing] radius: ${radius}, calculated size: ${size}`); // 添加日志
+  const sizeSq = size * size;
+
+  if (size === 1) {
+    console.log("[SkinSmoothing] size is 1, skipping smoothing."); // 添加日志
+    return imageData; // 半径为1相当于没有模糊
+  }
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      let rSum = 0, gSum = 0, bSum = 0;
+      let count = 0;
+
+      for (let dy = -size; dy <= size; dy++) {
+        for (let dx = -size; dx <= size; dx++) {
+          const nx = x + dx;
+          const ny = y + dy;
+
+          if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+            const index = (ny * width + nx) * 4;
+            rSum += pixels[index];
+            gSum += pixels[index + 1];
+            bSum += pixels[index + 2];
+            count++;
+          }
+        }
+      }
+
+      const currentIndex = (y * width + x) * 4;
+      smoothedPixels[currentIndex] = rSum / count;
+      smoothedPixels[currentIndex + 1] = gSum / count;
+      smoothedPixels[currentIndex + 2] = bSum / count;
+      smoothedPixels[currentIndex + 3] = pixels[currentIndex + 3]; // 保留 Alpha 通道
+    }
+  }
+
+  return new ImageData(smoothedPixels, width, height);
+};
+
+/**
+ * 应用简单的肤色调整到 ImageData
+ * @param imageData 原始 ImageData 对象
+ * @param tone 肤色调整值 (-100 到 100)
+ *             正值偏红，负值偏蓝
+ * @returns 应用肤色调整后的新 ImageData 对象
+ */
+const applySkinToneAdjustment = (
+  imageData: ImageData,
+  tone: number
+): ImageData => {
+  if (tone === 0) return imageData; // 无需处理
+
+  const pixels = imageData.data;
+  const numPixels = pixels.length / 4;
+  const adjustedPixels = new Uint8ClampedArray(pixels); // 创建一个新的 Uint8ClampedArray
+
+  // 调整因子，将 -100 到 100 映射到 -1 到 1
+  const toneFactor = tone / 100;
+
+  for (let i = 0; i < numPixels; i++) {
+    const rIndex = i * 4;
+    const gIndex = i * 4 + 1;
+    const bIndex = i * 4 + 2;
+
+    let r = pixels[rIndex];
+    let g = pixels[gIndex];
+    let b = pixels[bIndex];
+
+    // 简单的肤色调整：调整红蓝通道
+    // 正值 (偏红): 增加 R, 减少 B
+    // 负值 (偏蓝): 减少 R, 增加 B
+    // 调整幅度可以根据需要调整，这里使用 toneFactor * 30
+    r += toneFactor * 30;
+    b -= toneFactor * 30;
+
+    // 限制像素值在 0 到 255 之间
+    adjustedPixels[rIndex] = Math.max(0, Math.min(255, r));
+    adjustedPixels[gIndex] = Math.max(0, Math.min(255, g));
+    adjustedPixels[bIndex] = Math.max(0, Math.min(255, b));
+    adjustedPixels[i * 4 + 3] = pixels[i * 4 + 3]; // 保留 Alpha 通道
+  }
+
+  return new ImageData(adjustedPixels, imageData.width, imageData.height);
+};
+
 
 export default function IdPhotoMakerPage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -130,6 +234,8 @@ export default function IdPhotoMakerPage() {
   const [scale, setScale] = useState<number>(1); // 新增：图片缩放比例，默认为1 (100%)
   const [brightness, setBrightness] = useState<number>(0); // 新增：亮度调整值 (-100 to 100)
   const [contrast, setContrast] = useState<number>(0); // 新增：对比度调整值 (-100 to 100)
+  const [skinSmoothing, setSkinSmoothing] = useState<number>(0); // 新增：磨皮调整值 (0 to 100)
+  const [skinTone, setSkinTone] = useState<number>(0); // 新增：肤色调整值 (-100 to 100)
   const [redrawTrigger, setRedrawTrigger] = useState(0); // 新增：用于触发canvas重绘的状态
 
   // Store necessary values in refs whenever they change, so onResults can access them
@@ -284,6 +390,16 @@ export default function IdPhotoMakerPage() {
     // Apply brightness and contrast adjustments
     if (brightness !== 0 || contrast !== 0) {
         imageData = applyBrightnessAndContrast(imageData, brightness, contrast);
+    }
+
+    // Apply skin smoothing adjustment
+    if (skinSmoothing > 0) {
+        imageData = applySkinSmoothing(imageData, skinSmoothing);
+    }
+
+    // Apply skin tone adjustment
+    if (skinTone !== 0) {
+        imageData = applySkinToneAdjustment(imageData, skinTone);
     }
 
     // Put the adjusted image data back onto the main canvas
@@ -553,7 +669,7 @@ export default function IdPhotoMakerPage() {
     } else if (!previewUrl) {
       clearCanvas();
     }
-  }, [previewUrl, selectedSizeName, drawCanvas, clearCanvas, scale, brightness, contrast, redrawTrigger]); // Add scale, brightness, contrast, and redrawTrigger to dependencies
+  }, [previewUrl, selectedSizeName, drawCanvas, clearCanvas, scale, brightness, contrast, skinSmoothing, skinTone, redrawTrigger]); // Add scale, brightness, contrast, skinSmoothing, skinTone, and redrawTrigger to dependencies
 
   useEffect(() => {
     const handleResize = () => {
@@ -720,6 +836,16 @@ export default function IdPhotoMakerPage() {
     // Apply brightness and contrast adjustments to the cropped image data
     if (brightness !== 0 || contrast !== 0) {
         croppedImageData = applyBrightnessAndContrast(croppedImageData, brightness, contrast);
+    }
+
+    // Apply skin smoothing adjustment to the cropped image data
+    if (skinSmoothing > 0) {
+        croppedImageData = applySkinSmoothing(croppedImageData, skinSmoothing);
+    }
+
+    // Apply skin tone adjustment to the cropped image data
+    if (skinTone !== 0) {
+        croppedImageData = applySkinToneAdjustment(croppedImageData, skinTone);
     }
 
     // Put the adjusted image data back onto the output canvas
@@ -953,6 +1079,38 @@ export default function IdPhotoMakerPage() {
                     step="1" // 步长
                     value={contrast}
                     onChange={(e) => setContrast(parseInt(e.target.value, 10))}
+                    className={styles.rangeSlider}
+                  />
+                </div>
+              )}
+              {/* 磨皮调整控制 */}
+              {previewUrl && (
+                <div className={styles.settingItem} style={{ marginTop: '15px' }}>
+                  <label htmlFor="skin-smoothing-slider" className={styles.label}>磨皮 ({skinSmoothing}%):</label>
+                  <input
+                    id="skin-smoothing-slider"
+                    type="range"
+                    min="0" // 最小磨皮
+                    max="100"   // 最大磨皮
+                    step="1" // 步长
+                    value={skinSmoothing}
+                    onChange={(e) => setSkinSmoothing(parseInt(e.target.value, 10))}
+                    className={styles.rangeSlider}
+                  />
+                </div>
+              )}
+              {/* 肤色调整控制 */}
+              {previewUrl && (
+                <div className={styles.settingItem} style={{ marginTop: '15px' }}>
+                  <label htmlFor="skin-tone-slider" className={styles.label}>肤色 ({skinTone}%):</label>
+                  <input
+                    id="skin-tone-slider"
+                    type="range"
+                    min="-100" // 最小肤色调整
+                    max="100"   // 最大肤色调整
+                    step="1" // 步长
+                    value={skinTone}
+                    onChange={(e) => setSkinTone(parseInt(e.target.value, 10))}
                     className={styles.rangeSlider}
                   />
                 </div>
