@@ -1,8 +1,8 @@
 /* 全局与容器样式 */
 .container {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  background-color: #1d1d1f; /* 深空灰背景 */
-  color: #f5f5f7; /* 浅色文字 */
+  background-color: #f5f5f7; /* 浅色背景 */
+  color: #333; /* 深色文字 */
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
@@ -26,14 +26,14 @@
 
 .description {
   font-size: 1.1em;
-  color: #a1a1a6;
+  color: #555;
 }
 
 /* 全局与容器样式 */
 .container {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  background-color: #1d1d1f; /* 深空灰背景 */
-  color: #f5f5f7; /* 浅色文字 */
+  background-color: #f5f5f7; /* 浅色背景 */
+  color: #333; /* 深色文字 */
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
@@ -57,14 +57,14 @@
 
 .description {
   font-size: 1.1em;
-  color: #a1a1a6;
+  color: #555;
 }
 
 /* 主要内容区域 */
 .mainContent {
   width: 100%;
   max-width: 1200px; /* 增加最大宽度以适应左右布局 */
-  background-color: #2c2c2e; /* 稍浅的深空灰作为容器背景 */
+  background-color: #ffffff; /* 白色容器背景 */
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -107,7 +107,7 @@
 .toolArea section {
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #3a3a3c; /* 分隔线 */
+  border-bottom: 1px solid #eee; /* 分隔线 */
 }
 
 .toolArea section:last-child {
@@ -118,19 +118,19 @@
 .toolArea h2 {
   font-size: 1.5em;
   font-weight: 500;
-  color: #f5f5f7;
+  color: #333;
   margin-bottom: 15px;
 }
 
 .toolArea p {
-  color: #a1a1a6;
+  color: #555;
   line-height: 1.6;
   margin-bottom: 15px;
 }
 
 /* 上传区域特定样式 */
 .uploadSection { /* 应用于整个 section 元素，作为拖拽区域 */
-  border: 2px dashed #4a4a4e; /* 虚线边框作为拖拽区域提示 */
+  border: 2px dashed #ccc; /* 虚线边框作为拖拽区域提示 */
   padding: 20px;
   border-radius: 8px;
   text-align: center;
@@ -143,8 +143,8 @@
 }
 
 .uploadSection.dragOver { /* 文件拖拽悬停时的样式 */
-  background-color: #3a3a3c;
-  border-color: #007aff; /* 苹果蓝高亮 */
+  background-color: #f0f0f0;
+  border-color: #007bff; /* 蓝色高亮 */
 }
 
 .uploadControls { /* 用于包裹按钮和文件名显示 */
@@ -156,7 +156,7 @@
 }
 
 .fileUploadButton { /* 自定义的文件选择按钮样式 */
-  background-color: #007aff;
+  background-color: #007bff;
   color: white;
   padding: 10px 20px;
   border-radius: 8px;
@@ -167,7 +167,7 @@
 }
 
 .fileUploadButton:hover {
-  background-color: #005ecf;
+  background-color: #0056b3;
 }
 
 .fileInputHidden { /* 隐藏原生的 input[type="file"] */
@@ -193,13 +193,13 @@
   min-height: 200px;
   /* max-height: 400px; /* 在左右布局中移除固定最大高度 */
   width: 100%;
-  background-color: #3a3a3c;
+  background-color: #f9f9f9;
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #777;
-  border: 2px dashed #4a4a4e;
+  border: 2px dashed #ccc;
   overflow: hidden;
   margin-top: 10px;
   position: relative; /* 为了绝对定位占位符文本 */
@@ -218,14 +218,14 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: #a1a1a6; /* 调整占位符颜色 */
+  color: #555; /* 调整占位符颜色 */
   font-size: 0.9em;
 }
 
 
 /* 错误信息样式 */
 .errorMessage {
-  color: #ff3b30; /* 苹果红，用于错误提示 */
+  color: #d93025; /* 红色，用于错误提示 */
   font-size: 0.9em;
   margin-top: 10px;
   text-align: left; /* 错误信息左对齐 */
@@ -247,7 +247,7 @@
 
 .label {
   font-size: 0.95em;
-  color: #a1a1a6; /* 标签颜色 */
+  color: #555; /* 标签颜色 */
   margin-bottom: 8px;
   display: block; /* 确保标签占据一行 */
 }
@@ -256,10 +256,10 @@
 .selectControl {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #4a4a4e; /* 边框颜色 */
+  border: 1px solid #ccc; /* 边框颜色 */
   border-radius: 8px;
-  background-color: #3a3a3c; /* 输入框背景 */
-  color: #f5f5f7; /* 输入文字颜色 */
+  background-color: #f9f9f9; /* 输入框背景 */
+  color: #333; /* 输入文字颜色 */
   font-size: 1em;
   transition: border-color 0.3s ease;
   appearance: none; /* 移除默认箭头，如果需要自定义箭头 */
@@ -272,7 +272,7 @@
 
 .selectControl:focus {
   outline: none;
-  border-color: #007aff; /* 苹果蓝作为焦点颜色 */
+  border-color: #007bff; /* 蓝色作为焦点颜色 */
 }
 
 /* 颜色选择区域 */
@@ -294,7 +294,7 @@
 }
 
 .colorOptionLabel:hover {
-  background-color: #4a4a4e; /* 轻微的悬停效果 */
+  background-color: #f0f0f0; /* 轻微的悬停效果 */
 }
 
 .radioInput {
@@ -316,12 +316,12 @@
 
 .radioInput:checked + .colorSwatch {
   transform: scale(1.15); /* 选中时放大一点 */
-  box-shadow: 0 0 0 2px #2c2c2e, 0 0 0 4px #007aff; /* 模拟苹果的选中效果 */
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #007bff; /* 模拟选中效果 */
 }
 
 /* 下载按钮 */
 .downloadSectionButton { /* 更新类名以匹配TSX文件 */
-  background-color: #007aff; /* 苹果蓝 */
+  background-color: #007bff; /* 蓝色 */
   color: white;
   border: none;
   padding: 12px 25px;
@@ -335,20 +335,20 @@
 }
 
 .downloadSectionButton:hover {
-  background-color: #005ecf; /* 悬停颜色变深 */
+  background-color: #0056b3; /* 悬停颜色变深 */
 }
 
 .downloadSectionButton:active {
-  background-color: #004aad; /* 点击颜色更深 */
+  background-color: #004085; /* 点击颜色更深 */
 }
 
 /* 自定义颜色选择器容器 */
 .customColorPicker {
   margin-top: 15px;
   padding: 15px;
-  border: 1px solid #4a4a4e;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  background-color: #3a3a3c;
+  background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -395,26 +395,26 @@
 .processedPreviewArea {
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid #3a3a3c;
+    border-top: 1px solid #eee;
     text-align: center;
 }
 
 .processedPreviewArea h4 {
     font-size: 1.2em;
     margin-bottom: 15px;
-    color: #f5f5f7;
+    color: #333;
 }
 
 .processedPreviewImage {
     max-width: 100%;
     height: auto;
-    border: 1px solid #4a4a4e;
+    border: 1px solid #ccc;
     border-radius: 8px;
     margin-bottom: 15px;
 }
 
 .processingMessage {
-    color: #007aff; /* 苹果蓝 */
+    color: #007bff; /* 蓝色 */
     font-size: 0.9em;
     margin-top: 10px;
     text-align: center;
@@ -426,7 +426,7 @@
     -webkit-appearance: none;
     appearance: none;
     height: 8px;
-    background: #4a4a4e;
+    background: #ccc;
     outline: none;
     opacity: 0.7;
     transition: opacity .2s;
@@ -443,18 +443,18 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #007aff;
+    background: #007bff;
     cursor: pointer;
-    border: 2px solid #2c2c2e;
+    border: 2px solid #ffffff;
 }
 
 .rangeSlider::-moz-range-thumb {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #007aff;
+    background: #007bff;
     cursor: pointer;
-    border: 2px solid #2c2c2e;
+    border: 2px solid #ffffff;
 }
 
 
@@ -465,7 +465,10 @@
   text-align: center;
   margin-top: 40px;
   padding-top: 20px;
-  border-top: 1px solid #3a3a3c;
-  color: #a1a1a6;
+  border-top: 1px solid #eee;
+  color: #555;
   font-size: 0.9em;
 }
+
+/* 新增美颜滑块样式，复用现有 .settingItem 和 .rangeSlider */
+/* .settingItem 和 .rangeSlider 已经在 page.tsx 中应用于新的滑块 */

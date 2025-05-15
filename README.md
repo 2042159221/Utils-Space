@@ -30,6 +30,12 @@
 - **说明**: 一款在线工具，用于帮助用户快速制作符合各种规格要求的证件照片。
 - **详情**: 请参考 [`tools-doc/idPhotoMaker/idPhotoMaker.md`](tools-doc/idPhotoMaker/idPhotoMaker.md)
 
+### 4. JSON 工具
+
+- **位置**: [`tools/jsonTool/`](tools/jsonTool/)
+- **说明**: 一个用于校验、格式化、压缩和可视化 JSON 数据的在线工具。
+- **详情**: 请参考 [`tools-doc/jsonTool/jsonTool.md`](tools-doc/jsonTool/jsonTool.md)
+
 ## 未来计划
 
 - 更多实用工具...

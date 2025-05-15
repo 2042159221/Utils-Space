@@ -1,0 +1,171 @@
+/* app/(tools)/json-tool/styles.module.css */
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: sans-serif;
+}
+
+.title {
+  text-align: center;
+  color: #333; /* Keep default text color for light theme */
+  margin-bottom: 20px;
+}
+
+.content {
+  display: flex;
+  gap: 20px;
+}
+
+.leftPanel,
+.rightPanel {
+  flex: 1;
+  border: 1px solid #ddd; /* Keep light border for light theme */
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.leftPanel h2,
+.rightPanel h2 {
+  margin-top: 0;
+  color: #555; /* Keep default text color for light theme */
+  border-bottom: 1px solid #eee; /* Keep light border for light theme */
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.jsonInput {
+  flex-grow: 1;
+  min-height: 300px;
+  padding: 10px;
+  border: 1px solid #ccc; /* Keep light border for light theme */
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 14px;
+  resize: vertical;
+}
+
+.controls {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.controls button {
+  padding: 8px 15px;
+  background-color: #007bff; /* Keep blue background for button */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.controls button:hover {
+  background-color: #0056b3; /* Keep dark blue hover background for button */
+}
+
+.controls label {
+  font-size: 14px;
+}
+
+.controls select {
+  padding: 8px;
+  border: 1px solid #ccc; /* Keep light border for light theme */
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.tabs {
+  display: flex;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd; /* Keep light border for light theme */
+}
+
+.tabs button {
+  padding: 10px 15px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom 0.3s ease;
+}
+
+.tabs button:hover {
+  border-bottom-color: #007bff;
+}
+
+.tabs button.activeTab {
+  border-bottom-color: #007bff;
+  color: #007bff;
+  font-weight: bold;
+}
+
+.tabContent {
+  flex-grow: 1;
+  overflow-y: auto; /* Enable scrolling for content */
+}
+
+.outputHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.outputHeader h3 {
+  margin: 0;
+  color: #555;
+  font-size: 1.1em;
+}
+
+.copyButton {
+  padding: 4px 10px;
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease;
+}
+
+.copyButton:hover {
+  background-color: #ccc;
+}
+
+.validationOutput pre,
+.formattedOutput pre {
+  white-space: pre-wrap; /* Wrap long lines */
+  word-break: break-all; /* Break words if necessary */
+  padding: 10px;
+  background-color: #f8f9fa; /* Keep light background for output */
+  border: 1px solid #eee; /* Keep light border for output */
+  border-radius: 4px;
+  min-height: 200px; /* Ensure minimum height */
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.validationOutput pre {
+  color: green; /* Default color for success */
+}
+
+.validationOutput pre:contains("错误") {
+  color: red; /* Color for error messages */
+}
+
+.visualizationOutput {
+  /* Specific styles for the visualization container if needed */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+  }
+}
