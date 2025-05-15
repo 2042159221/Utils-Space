@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进制转换器</title>
+    <style>
+        /* 全局样式与苹果风格配色 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #1d1d1f; /* 深空灰背景 */
+            color: #f5f5f7; /* 浅色文字 */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #2c2c2e; /* 稍浅的深空灰作为容器背景 */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #f5f5f7;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* 输入区域样式 */
+        .input-group {
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 标签左对齐 */
+        }
+
+        .input-group label {
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #a1a1a6; /* 标签颜色 */
+        }
+
+        .input-group input[type="text"],
+        .input-group select {
+            width: calc(100% - 22px); /* 减去padding和border */
+            padding: 10px;
+            border: 1px solid #4a4a4e; /* 边框颜色 */
+            border-radius: 8px;
+            background-color: #3a3a3c; /* 输入框背景 */
+            color: #f5f5f7; /* 输入文字颜色 */
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input[type="text"]:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #007aff; /* 苹果蓝作为焦点颜色 */
+        }
+
+        .input-group input[type="text"].error {
+            border-color: #ff3b30; /* 错误提示红色 */
+        }
+
+        #errorMessage {
+            color: #ff3b30;
+            font-size: 0.85em;
+            min-height: 1.2em; /* 防止抖动 */
+            text-align: left;
+            margin-top: 5px;
+        }
+
+        /* 结果展示区域样式 */
+        .results-panel {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .result-item {
+            background-color: #3a3a3c;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            word-break: break-all; /* 长数字换行 */
+        }
+
+        .result-item .base-name {
+            font-weight: 500;
+            color: #a1a1a6;
+            min-width: 70px; /* 保持对齐 */
+        }
+
+        .result-item .value {
+            flex-grow: 1;
+            margin-left: 10px;
+            margin-right: 10px;
+            color: #f5f5f7;
+        }
+
+        .result-item button {
+            background-color: #007aff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background-color 0.2s ease;
+        }
+
+        .result-item button:hover {
+            background-color: #005ecf;
+        }
+        .result-item button:active {
+            background-color: #004aad;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>进制转换器</h1>
+
+        <div class="input-group">
+            <label for="inputValue">输入数值:</label>
+            <input type="text" id="inputValue" placeholder="例如: 1010">
+            <p id="errorMessage"></p>
+        </div>
+
+        <div class="input-group">
+            <label for="inputBase">输入进制:</label>
+            <select id="inputBase">
+                <option value="2">二进制 (Binary)</option>
+                <option value="8">八进制 (Octal)</option>
+                <option value="10" selected>十进制 (Decimal)</option>
+                <option value="16">十六进制 (Hexadecimal)</option>
+            </select>
+        </div>
+
+        <div class="results-panel">
+            <div class="result-item">
+                <span class="base-name">二进制:</span>
+                <span class="value" id="binaryResult">-</span>
+                <button onclick="copyToClipboard('binaryResult')">复制</button>
+            </div>
+            <div class="result-item">
+                <span class="base-name">八进制:</span>
+                <span class="value" id="octalResult">-</span>
+                <button onclick="copyToClipboard('octalResult')">复制</button>
+            </div>
+            <div class="result-item">
+                <span class="base-name">十进制:</span>
+                <span class="value" id="decimalResult">-</span>
+                <button onclick="copyToClipboard('decimalResult')">复制</button>
+            </div>
+            <div class="result-item">
+                <span class="base-name">十六进制:</span>
+                <span class="value" id="hexResult">-</span>
+                <button onclick="copyToClipboard('hexResult')">复制</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM 元素获取
+        const inputValueEl = document.getElementById('inputValue');
+        const inputBaseEl = document.getElementById('inputBase');
+        const errorMessageEl = document.getElementById('errorMessage');
+
+        const binaryResultEl = document.getElementById('binaryResult');
+        const octalResultEl = document.getElementById('octalResult');
+        const decimalResultEl = document.getElementById('decimalResult');
+        const hexResultEl = document.getElementById('hexResult');
+
+        // 初始化：绑定事件监听器
+        function init() {
+            inputValueEl.addEventListener('input', handleInputChange);
+            inputBaseEl.addEventListener('change', handleInputChange);
+            // 页面加载时，如果输入框有默认值（例如浏览器记住的），也进行一次转换
+            if (inputValueEl.value) {
+                handleInputChange();
+            }
+        }
+
+        // 处理输入变化的核心函数
+        function handleInputChange() {
+            const value = inputValueEl.value.trim();
+            const base = parseInt(inputBaseEl.value, 10);
+
+            clearError(); // 清除之前的错误
+
+            if (value === "") {
+                resetResults();
+                return;
+            }
+
+            // 1. 验证输入
+            if (!validateInput(value, base)) {
+                displayError(`无效的${inputBaseEl.options[inputBaseEl.selectedIndex].text.split(' ')[0]}数字。`);
+                inputValueEl.classList.add('error');
+                resetResults();
+                return;
+            }
+            inputValueEl.classList.remove('error');
+
+            // 2. 将输入值转换为十进制 (作为中间标准)
+            let decimalValue;
+            try {
+                if (base === 2) {
+                    decimalValue = parseInt(value, 2);
+                } else if (base === 8) {
+                    decimalValue = parseInt(value, 8);
+                } else if (base === 10) {
+                    decimalValue = parseInt(value, 10);
+                     // 对于十进制，额外检查是否真的是数字，因为parseInt("abc", 10)会是NaN，但parseInt("10abc",10)会是10
+                    if (isNaN(decimalValue) || !/^\d+$/.test(value)) {
+                        throw new Error("Invalid decimal number");
+                    }
+                } else if (base === 16) {
+                    // 十六进制输入时，允许包含0x或0X前缀，但parseInt会自动处理
+                    // 我们需要确保除了0-9, a-f, A-F之外没有其他字符
+                    if (!/^[0-9a-fA-F]+$/.test(value.replace(/^0x/i, ''))) {
+                         throw new Error("Invalid hexadecimal number");
+                    }
+                    decimalValue = parseInt(value, 16);
+                }
+
+                if (isNaN(decimalValue)) {
+                     throw new Error("Conversion resulted in NaN");
+                }
+            } catch (error) {
+                displayError(`无法将 "${value}" 从${base}进制转换。`);
+                inputValueEl.classList.add('error');
+                resetResults();
+                return;
+            }
+            
+            // 3. 更新所有进制的结果
+            updateResults(decimalValue);
+        }
+
+        // 验证输入值是否符合指定进制的规则
+        function validateInput(value, base) {
+            if (value === null || typeof value === 'undefined' || value === '') return true; // 空输入暂时认为是有效的，由handleInputChange处理
+
+            let regex;
+            switch (base) {
+                case 2:
+                    regex = /^[01]+$/;
+                    break;
+                case 8:
+                    regex = /^[0-7]+$/;
+                    break;
+                case 10:
+                    regex = /^\d+$/; // 只允许数字
+                    break;
+                case 16:
+                    // 允许可选的 "0x" 或 "0X" 前缀
+                    const coreValue = value.startsWith('0x') || value.startsWith('0X') ? value.substring(2) : value;
+                    if (coreValue === '') return value.length >=2; // "0x" 本身认为是部分有效，等待更多输入
+                    regex = /^[0-9a-fA-F]+$/;
+                    return regex.test(coreValue); // 只校验核心部分
+                default:
+                    return false; // 不支持的进制
+            }
+            return regex.test(value);
+        }
+
+        // 更新所有结果面板
+        function updateResults(decimalValue) {
+            if (isNaN(decimalValue) || decimalValue < 0) { // 简单起见，暂不支持负数或无效转换
+                resetResults();
+                if (!isNaN(decimalValue) && decimalValue < 0) {
+                    displayError("暂不支持负数转换。");
+                }
+                return;
+            }
+            binaryResultEl.textContent = decimalValue.toString(2);
+            octalResultEl.textContent = decimalValue.toString(8);
+            decimalResultEl.textContent = decimalValue.toString(10);
+            hexResultEl.textContent = decimalValue.toString(16).toUpperCase(); // 十六进制转大写
+        }
+
+        // 重置结果面板为默认值
+        function resetResults() {
+            binaryResultEl.textContent = '-';
+            octalResultEl.textContent = '-';
+            decimalResultEl.textContent = '-';
+            hexResultEl.textContent = '-';
+        }
+
+        // 显示错误信息
+        function displayError(message) {
+            errorMessageEl.textContent = message;
+        }
+
+        // 清除错误信息
+        function clearError() {
+            errorMessageEl.textContent = '';
+            inputValueEl.classList.remove('error');
+        }
+
+        // 一键复制功能
+        function copyToClipboard(elementId) {
+            const textToCopy = document.getElementById(elementId).textContent;
+            if (textToCopy && textToCopy !== '-') {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    // 可选：给用户一个复制成功的提示
+                    // alert('已复制到剪贴板: ' + textToCopy);
+                    const button = document.querySelector(`#${elementId} + button`);
+                    if(button){
+                        const originalText = button.textContent;
+                        button.textContent = '已复制!';
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                        }, 1500);
+                    }
+                }).catch(err => {
+                    console.error('复制失败: ', err);
+                    // 可选：提示用户复制失败
+                    // alert('复制失败，请手动复制。');
+                });
+            }
+        }
+
+        // 页面加载完成后执行初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

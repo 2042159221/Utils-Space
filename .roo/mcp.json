@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "git": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-git",
+        "--repository",
+        "D:/CodeProjects/VscodeProjects/utils-space"
+      ],
+      "alwaysAllow": [
+        "git_commit",
+        "git_status",
+        "git_diff_unstaged",
+        "git_diff_staged",
+        "git_diff",
+        "git_log",
+        "git_show",
+        "git_add"
+      ]
+    }
+  }
+}
