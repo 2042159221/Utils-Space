@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>暗黑模式测试</title>
+  <script>
+    // 检查当前主题
+    function checkTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+      
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        document.getElementById('theme-status').textContent = '当前模式：暗色';
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.getElementById('theme-status').textContent = '当前模式：亮色';
+      }
+    }
+    
+    // 切换主题
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.contains('dark');
+      
+      if (isDark) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        document.getElementById('theme-status').textContent = '当前模式：亮色';
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        document.getElementById('theme-status').textContent = '当前模式：暗色';
+      }
+    }
+    
+    // 页面加载时初始化主题
+    document.addEventListener('DOMContentLoaded', checkTheme);
+  </script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      transition: all 0.3s ease;
+      margin: 0;
+      padding: 20px;
+      height: 100vh;
+    }
+    
+    .dark body {
+      background-color: #1a202c;
+      color: #f7fafc;
+    }
+    
+    body {
+      background-color: #f7fafc;
+      color: #1a202c;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 40px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .dark .container {
+      background-color: #2d3748;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    }
+    
+    .container {
+      background-color: white;
+    }
+    
+    button {
+      background-color: #5B6AFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 20px;
+    }
+    
+    button:hover {
+      background-color: #4c5ad9;
+      transform: translateY(-2px);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    h1 {
+      margin-bottom: 20px;
+    }
+    
+    p {
+      margin-bottom: 30px;
+      font-size: 18px;
+    }
+    
+    .status {
+      font-weight: bold;
+      font-size: 20px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>暗黑模式测试</h1>
+    <p>这是一个简单的HTML页面，用于测试暗黑模式切换功能。点击下方按钮切换主题。</p>
+    <button onclick="toggleTheme()">切换主题</button>
+    <p class="status" id="theme-status">当前模式：加载中...</p>
+    
+    <div style="margin-top: 40px">
+      <p>如果此页面可以正常切换主题，但应用中不行，可能是 Tailwind 配置或 React 状态管理问题。</p>
+      <button onclick="forceFixTheme()">强制修复主题</button>
+    </div>
+    
+    <script>
+      function forceFixTheme() {
+        // 强制清除localStorage中的theme
+        localStorage.removeItem('theme');
+        
+        // 设置为系统偏好
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (prefersDark) {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        }
+        
+        // 提示用户
+        alert('已重置主题设置！请返回应用刷新页面。');
+      }
+    </script>
+  </div>
+</body>
+</html> 

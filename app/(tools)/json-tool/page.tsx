@@ -6,8 +6,10 @@ import dynamic from 'next/dynamic';
 import jsonParser from 'json-parser';
 import styles from './styles.module.css';
 
-// 使用 dynamic import 动态加载 ReactJsonView，并禁用 SSR
-const ReactJsonView = dynamic(() => import('react-json-view'), { ssr: false });
+// 使用 dynamic import 动态加载 react-json-view-lite，并禁用 SSR
+const JsonView = dynamic(() => import('react-json-view-lite').then(mod => ({ default: mod.JsonView })), { ssr: false });
+// 导入样式
+import 'react-json-view-lite/dist/index.css';
 
 const JsonToolPage: React.FC = () => {
   const [jsonInput, setJsonInput] = useState('{\n  "name": "示例",\n  "version": 1.0,\n  "data": [\n    {\n      "id": 1,\n      "value": "你好"\n    },\n    {\n      "id": 2,\n      "value": "世界"\n    }\n  ]\n}'); // 添加默认 JSON 示例
@@ -144,7 +146,7 @@ const JsonToolPage: React.FC = () => {
             )}
             {activeTab === 'visualization' && visualizationData && (
               <div className={styles.visualizationOutput}>
-                <ReactJsonView src={visualizationData} enableClipboard={false} />
+                <JsonView data={visualizationData} />
               </div>
             )}
           </div>

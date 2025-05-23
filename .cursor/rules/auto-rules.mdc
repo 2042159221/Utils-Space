@@ -2,6 +2,10 @@
 description: 在每次代码更改后自动执行，生成符合conventional commit规范的提交消息，并对新手小白提供友好的解释。
 globs: 
 alwaysApply: false
+---
+---
+description: 在每次代码更改后自动执行，生成符合conventional commit规范的提交消息，并对新手小白提供友好的解释。
+globs: 
 
 ---
 

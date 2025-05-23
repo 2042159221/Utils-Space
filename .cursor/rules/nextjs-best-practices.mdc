@@ -1,0 +1,92 @@
+---
+description:  Next.js框架最佳实践指南
+globs: 
+alwaysApply: true
+---
+description: Next.js框架最佳实践指南，包含App Router和Pages Router的使用建议、性能优化策略、项目结构组织、SEO与元数据处理、数据获取方法及样式方案选择等核心开发原则，帮助开发者构建高效、可扩展且易于维护的Next.js应用。
+
+# Next.js 最佳实践 - 来自框架作者的亲授
+
+作为 Next.js 最初的架构师，我希望确保你能够构建出最高效、可扩展且易于维护的应用程序。请遵循以下核心原则：
+
+## 1. 拥抱 App Router (或正确使用 Pages Router)
+
+*   **App Router (推荐用于新项目):**
+    *   默认使用 **Server Components (服务器组件)** 以获得最佳性能。直接在其中获取数据。
+    *   谨慎使用 **Client Components (客户端组件)** (标记 `'use client'`)，仅用于实现交互性 (如事件处理、状态管理、浏览器 API 调用)。
+    *   利用 `layout.js`, `page.js`, `loading.js`, `error.js`, 和 `not-found.js` 等约定文件来构建 UI 结构和处理各种状态。
+    *   使用 **Route Handlers (路由处理器)** 构建 API 端点。
+    *   运用 **Server Actions (服务器操作)** 进行数据变更，以简化客户端与服务器之间的数据交互。
+*   **Pages Router (适用于现有项目或特定需求):**
+    *   深刻理解 `getStaticProps` (SSG, 静态站点生成)、`getServerSideProps` (SSR, 服务器端渲染) 与客户端数据获取之间的差异。为每个页面选择最合适的数据获取方式。
+    *   使用 API Routes (`pages/api`) 编写后端逻辑。
+
+## 2. 从第一天起就关注性能优化
+
+*   **图片优化**: 始终使用 `next/image` 中的 `<Image />` 组件。它能自动优化图片、调整大小并输出现代图片格式。
+    ```jsx
+    import Image from 'next/image';
+    // 示例: <Image src="/my-image.jpg" alt="图片描述" width={500} height={300} />
+    ```
+*   **字体优优化**: 使用 `next/font` 来高效加载本地字体或 Google Fonts，避免布局偏移 (layout shifts) 并保护用户隐私。
+    ```javascript
+    // app/layout.js 或某个组件中
+    import { Inter } from 'next/font/google';
+    const inter = Inter({ subsets: ['latin'] });
+    // 将 inter.className 应用到 HTML body 或特定元素上。
+    ```
+*   **懒加载 (Lazy Loading)**:
+    *   对于初始加载时不需要或仅限客户端的组件，使用 `next/dynamic`。
+    ```javascript
+    import dynamic from 'next/dynamic';
+    const MyClientComponent = dynamic(() => import('../components/MyClientComponent'), { ssr: false });
+    ```
+    *   仅在需要时动态导入大型库。
+
+## 3. 项目结构与可维护性
+
+*   **清晰的项目结构**:
+    *   有条理地组织你的组件 (`components/`)、工具函数 (`lib/` 或 `utils/`)、样式 (`styles/`) 和公共静态资源 (`public/`)。
+    *   对于 App Router，如果对你的团队更合理，可以将组件、测试和相关文件放在特性文件夹 (feature folders) 中进行共存。
+*   **环境变量**: 使用 `.env.local` 进行本地开发，并为不同环境正确管理环境变量。需要暴露给浏览器的变量请以 `NEXT_PUBLIC_` 开头。
+*   **TypeScript (强烈推荐)**: 采用 TypeScript 以增强类型安全和改善开发体验。
+    *   为 props、API 响应和状态定义清晰的类型。
+
+## 4. SEO 与元数据 (Metadata)
+
+*   **App Router**: 使用 [Metadata API](mdc:https:/nextjs.org/docs/app/building-your-application/optimizing/metadata) (例如，在 `layout.js` 或 `page.js` 中 `export const metadata = {}`) 来管理静态和动态元数据。
+*   **Pages Router**: 使用 `next/head` 中的 `<Head>` 组件来管理 `<title>`, `<meta>` 等标签。
+
+## 5. 数据获取策略
+
+*   **Server Components (App Router)**: 直接在异步的服务器组件中获取数据。这是最简单且性能最高的方式。
+    ```jsx
+    // app/my-page/page.js
+    async function getData() {
+      const res = await fetch('https://api.example.com/...');
+      if (!res.ok) throw new Error('Failed to fetch data');
+      return res.json();
+    }
+
+    export default async function Page() {
+      const data = await getData();
+      return <main>{/* ... 使用 data ... */}</main>;
+    }
+    ```
+*   **Route Handlers (App Router) / API Routes (Pages Router)**:
+    *   保持它们轻量。它们主要用于处理客户端请求，而不是承载繁重的业务逻辑 (这些逻辑应放在 `lib/` 或 services 中)。
+    *   正确处理请求方法 (GET, POST 等) 和 HTTP 状态码。
+*   **客户端数据获取**: 使用 SWR 或 React Query 等库进行客户端数据获取和缓存，尤其适用于频繁变化或用户特定的数据。
+
+## 6. 样式方案
+
+*   选择一种样式方案 (如 CSS Modules, Tailwind CSS, Styled Components, Emotion, Sass) 并坚持使用以保持一致性。
+*   如果使用 Tailwind CSS, 请确保正确配置 `tailwind.config.js` 和 `postcss.config.js`。
+*   全局样式应在 `app/layout.js` (App Router) 或 `pages/_app.js` (Pages Router) 中导入。
+
+请记住，Next.js 在设计上是灵活的，但同时也提供了一套强大的约定。遵循这些约定将使你的开发过程更加顺畅，应用程序也更加健壮。祝你编码愉快！ 
+*   选择一种样式方案 (如 CSS Modules, Tailwind CSS, Styled Components, Emotion, Sass) 并坚持使用以保持一致性。
+*   如果使用 Tailwind CSS, 请确保正确配置 `tailwind.config.js` 和 `postcss.config.js`。
+*   全局样式应在 `app/layout.js` (App Router) 或 `pages/_app.js` (Pages Router) 中导入。
+
+请记住，Next.js 在设计上是灵活的，但同时也提供了一套强大的约定。遵循这些约定将使你的开发过程更加顺畅，应用程序也更加健壮。祝你编码愉快！ 

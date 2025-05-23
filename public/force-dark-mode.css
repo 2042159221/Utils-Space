@@ -1,0 +1,227 @@
+/* 
+ * 强制暗黑模式 CSS
+ * 当HTML元素有dark类时应用这些样式
+ */
+
+/* 基础样式 */
+html.dark body {
+  background-color: #111827 !important; /* gray-900 */
+  color: #f9fafb !important; /* gray-50 */
+}
+
+/* 导航栏 */
+html.dark .bg-white\/90 {
+  background-color: rgba(31, 41, 55, 0.9) !important; /* gray-800/90 */
+}
+
+/* 侧边栏 */
+html.dark .bg-white {
+  background-color: #1f2937 !important; /* gray-800 */
+}
+
+html.dark .border-gray-200 {
+  border-color: #374151 !important; /* gray-700 */
+}
+
+/* 文本颜色 */
+html.dark .text-gray-900 {
+  color: #f9fafb !important; /* gray-50 */
+}
+
+html.dark .text-gray-600, 
+html.dark .text-gray-700,
+html.dark .text-gray-800 {
+  color: #d1d5db !important; /* gray-300 */
+}
+
+/* 确保链接文本在暗黑模式下仍然可见 */
+html.dark a {
+  color: #93c5fd !important; /* blue-300 */
+}
+
+/* 卡片和容器 */
+html.dark .bg-gray-50 {
+  background-color: #1f2937 !important; /* gray-800 */
+}
+
+html.dark .bg-gray-100 {
+  background-color: #374151 !important; /* gray-700 */
+}
+
+/* 白色背景的元素 */
+html.dark .bg-white {
+  background-color: #1f2937 !important; /* gray-800 */
+}
+
+/* 输入框 */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #374151 !important; /* gray-700 */
+  color: #f9fafb !important; /* gray-50 */
+  border-color: #4b5563 !important; /* gray-600 */
+}
+
+html.dark .border-gray-200 {
+  border-color: #374151 !important; /* gray-700 */
+}
+
+/* 按钮悬停状态 */
+html.dark .hover\:bg-gray-100:hover {
+  background-color: #374151 !important; /* gray-700 */
+}
+
+/* 覆盖所有主要组件的深色模式 */
+html.dark * {
+  --tw-ring-offset-color: #111827 !important;
+}
+
+/* 主要颜色 */
+html.dark .text-primary {
+  color: #7D89FF !important; /* primary-400 */
+}
+
+html.dark .bg-primary\/10 {
+  background-color: rgba(123, 137, 255, 0.1) !important; /* primary-400/10 */
+}
+
+/* 强制应用深色模式渐变 */
+html.dark .gradient-bg {
+  background: linear-gradient(to right, #5B6AFF, #8C54FF) !important;
+}
+
+/* 强制修复可能遗漏的组件 */
+html.dark .card,
+html.dark .feature-card,
+html.dark .tool-card,
+html.dark .hero-section,
+html.dark .features-section,
+html.dark .tools-grid {
+  background-color: #1f2937 !important; /* gray-800 */
+  color: #f9fafb !important; /* gray-50 */
+}
+
+/* 确保按钮文本在暗黑模式下有足够对比度 */
+html.dark button {
+  color: #f9fafb !important; /* gray-50 */
+}
+
+/* 确保标题文本在暗黑模式下可见 */
+html.dark h1, 
+html.dark h2, 
+html.dark h3, 
+html.dark h4, 
+html.dark h5, 
+html.dark h6 {
+  color: #f9fafb !important; /* gray-50 */
+}
+
+/* 工具卡片特殊修复 */
+html.dark .tool-card,
+html.dark div[class*="toolCard"],
+html.dark div[class*="ToolCard"] {
+  background-color: #1f2937 !important; /* gray-800 */
+  border-color: #374151 !important; /* gray-700 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.dark .tool-card:hover,
+html.dark div[class*="toolCard"]:hover,
+html.dark div[class*="ToolCard"]:hover {
+  background-color: #262f3f !important; /* slightly lighter than gray-800 */
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark .tool-card h3,
+html.dark .tool-card p,
+html.dark div[class*="toolCard"] h3,
+html.dark div[class*="toolCard"] p,
+html.dark div[class*="ToolCard"] h3,
+html.dark div[class*="ToolCard"] p {
+  color: #f9fafb !important; /* gray-50 */
+}
+
+/* 特性卡片特殊修复 */
+html.dark .feature-card,
+html.dark div[class*="featureCard"],
+html.dark div[class*="FeatureCard"] {
+  background-color: #1f2937 !important; /* gray-800 */
+  border-color: #374151 !important; /* gray-700 */
+}
+
+html.dark .feature-card h3,
+html.dark .feature-card p,
+html.dark div[class*="featureCard"] h3,
+html.dark div[class*="featureCard"] p,
+html.dark div[class*="FeatureCard"] h3,
+html.dark div[class*="FeatureCard"] p {
+  color: #f9fafb !important; /* gray-50 */
+}
+
+/* 英雄部分特殊修复 */
+html.dark .hero-section,
+html.dark section[class*="heroSection"],
+html.dark section[class*="HeroSection"] {
+  background: linear-gradient(to bottom, #111827, #1f2937) !important;
+}
+
+html.dark .hero-section h1,
+html.dark .hero-section p,
+html.dark section[class*="heroSection"] h1,
+html.dark section[class*="heroSection"] p,
+html.dark section[class*="HeroSection"] h1,
+html.dark section[class*="HeroSection"] p {
+  color: #f9fafb !important; /* gray-50 */
+}
+
+/* 统计卡片修复 */
+html.dark .bg-white\/50 {
+  background-color: rgba(31, 41, 55, 0.5) !important; /* gray-800/50 */
+}
+
+/* 渐变背景修复 */
+html.dark .bg-gradient-to-r,
+html.dark .bg-gradient-to-b {
+  background: linear-gradient(to right, #111827, #1f2937) !important;
+}
+
+/* SVG图标优化 - 修复X图标和其他图标在暗黑模式下的颜色 */
+html.dark svg.text-gray-600,
+html.dark svg.text-gray-700,
+html.dark svg.text-gray-800,
+html.dark svg.text-gray-900 {
+  color: #9ca3af !important; /* gray-400 - 确保在暗黑模式下可见但不太刺眼 */
+}
+
+/* 专门针对X图标的优化 */
+html.dark .lucide-x {
+  color: #9ca3af !important; /* gray-400 */
+}
+
+/* 针对导航图标的优化 */
+html.dark .lucide-menu,
+html.dark .lucide-search,
+html.dark .lucide-user,
+html.dark .lucide-globe,
+html.dark .lucide-settings {
+  color: #9ca3af !important; /* gray-400 */
+}
+
+/* 确保所有dark:text-gray-300类的SVG图标实际应用该颜色 */
+html.dark [class*="dark:text-gray-300"] {
+  color: #d1d5db !important; /* gray-300 */
+}
+
+/* 更加暗黑的图标颜色 - 比默认的深色模式颜色更暗 */
+html.dark .sidebar-icon,
+html.dark .nav-icon,
+html.dark .action-icon {
+  color: #6b7280 !important; /* gray-500 - 更暗的色调，不会太明亮 */
+}
+
+/* 强制应用深色模式过渡效果 */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+} 

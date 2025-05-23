@@ -1,12 +1,58 @@
-/* 基本的重置和全局设置 */
- body {
-  /*margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;*/
-  background-color: #f5f5f7; /* 默认浅色背景 */
-  color: #333; /* 默认深色文字 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #5B6AFF;
+  --secondary: #8C54FF;
+}
+
+@layer components {
+  .gradient-bg {
+    @apply bg-gradient-to-r from-primary to-secondary;
+  }
+  
+  .gradient-text {
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary;
+  }
+  
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg 
+           transition-all duration-300 hover:-translate-y-1 p-6;
+  }
+  
+  .nav-link {
+    @apply flex items-center px-4 py-2 text-gray-700 dark:text-gray-200 
+           hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors;
+  }
+  
+  .nav-link.active {
+    @apply gradient-bg text-white;
+  }
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full dark:bg-gray-600;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* 确保 Next.js 的根元素充满视口高度 */
+html, 
+body {
+  height: 100%;
 }
 
 /* 可以添加更多全局样式，例如链接样式、标题默认样式等 */
@@ -20,14 +66,93 @@ a:hover {
   text-decoration: underline;
 }
 
-/* 确保 Next.js 的根元素充满视口高度 */
-/* html, body, #__next {
-  height: 100%;
-} */
-
 /* 如果 #__next 不是直接的 body 子元素，或者你想更明确地针对 Next.js 的挂载点 */
 /* body > div:first-child,
 div#__next,
 div#__next > div {
   height: 100%;
 } */
+
+/* 暗黑模式覆盖样式 */
+.dark .card,
+.dark .feature-card,
+.dark .tool-card {
+  @apply bg-gray-800 text-gray-100 border-gray-700;
+}
+
+.dark h1, 
+.dark h2, 
+.dark h3, 
+.dark h4, 
+.dark h5, 
+.dark h6 {
+  @apply text-gray-100;
+}
+
+.dark p, 
+.dark span, 
+.dark div {
+  @apply text-gray-300;
+}
+
+.dark input, 
+.dark textarea, 
+.dark select {
+  @apply bg-gray-700 border-gray-600 text-gray-100;
+}
+
+.dark button {
+  @apply text-gray-100;
+}
+
+.dark .bg-white,
+.dark .bg-gray-50,
+.dark .bg-gray-100 {
+  @apply bg-gray-800;
+}
+
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-gray-700 {
+  @apply text-gray-100;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-500 {
+  @apply text-gray-300;
+}
+
+/* 工具卡片暗黑模式 */
+.dark .tool-grid-item,
+.dark [class*="toolCard"],
+.dark [class*="ToolCard"] {
+  @apply bg-gray-800 text-gray-100 shadow-lg;
+}
+
+/* 确保模态框在暗黑模式下有正确的样式 */
+.dark .modal,
+.dark .dialog,
+.dark [role="dialog"] {
+  @apply bg-gray-800 text-gray-100;
+}
+
+/* 确保下拉菜单在暗黑模式下有正确的样式 */
+.dark .dropdown-menu,
+.dark .menu {
+  @apply bg-gray-800 text-gray-100 border-gray-700;
+}
+
+/* 确保表格在暗黑模式下有正确的样式 */
+.dark table {
+  @apply bg-gray-800 text-gray-100;
+}
+
+.dark th,
+.dark td {
+  @apply border-gray-700 text-gray-100;
+}
+
+/* 统计卡片在暗黑模式下的样式 */
+.dark .bg-white\/50 {
+  @apply bg-gray-800/50;
+}

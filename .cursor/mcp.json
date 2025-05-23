@@ -18,10 +18,12 @@
         "git_add"
       ]
     },
+
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
     },
+
     "sequential-thinking": {
         "command": "npx",
         "args": [
@@ -29,5 +31,24 @@
           "@modelcontextprotocol/server-sequential-thinking"
         ]
       }
-  }
+  },
+
+  "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ]
+    },
+
+    "figma-developer-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "figma-developer-mcp",
+        "--stdio"
+      ],
+      "env": {
+        "FIGMA_API_KEY": "figd_0B-a7MXldOl9o5qQSOoSFmGOYyDbhrgbn5nakBAL"
+      }
+    }
 }
