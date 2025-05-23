@@ -5,7 +5,7 @@
       "args": [
         "mcp-server-git",
         "--repository",
-        "D:/CodeProjects/VscodeProjects/utils-space"
+        ""
       ],
       "alwaysAllow": [
         "git_commit",
