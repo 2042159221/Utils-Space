@@ -48,7 +48,7 @@
         "--stdio"
       ],
       "env": {
-        "FIGMA_API_KEY": "figd_0B-a7MXldOl9o5qQSOoSFmGOYyDbhrgbn5nakBAL"
+        "FIGMA_API_KEY": " ur key"
       }
     }
 }
